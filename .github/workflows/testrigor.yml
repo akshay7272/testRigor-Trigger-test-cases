@@ -1,13 +1,14 @@
 name: Run testRigor Tests
 
 on:
-  workflow_dispatch: # Allows manual trigger from GitHub Actions
+  workflow_dispatch: # Trigger manually from GitHub Actions
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Trigger testRigor Suite
+      - name: Trigger testRigor Test Suite
         run: |
           echo "Triggering testRigor test suite..."
           RESPONSE=$(curl -s -X POST \
