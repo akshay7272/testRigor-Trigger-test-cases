@@ -1,0 +1,18 @@
+name: Run testRigor Tests
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub Actions
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger testRigor Suite
+        run: |
+          echo "Triggering testRigor test suite..."
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -H "auth-token: ${{ secrets.TESTRIGOR_AUTH_TOKEN }}" \
+            https://api.testrigor.com/api/v1/apps/ytd8wTv9LncfCit95/retest)
+
+          echo "Response: $RESPONSE"
