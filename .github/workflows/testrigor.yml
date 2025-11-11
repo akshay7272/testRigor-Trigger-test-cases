@@ -1,7 +1,12 @@
 name: Run testRigor Tests
 
 on:
-  workflow_dispatch: # Trigger manually from GitHub Actions
+  push:                     # Trigger on any push
+    branches:
+      - main                # Or your default branch
+    paths:
+      - '**'                # Trigger on any file change
+  workflow_dispatch:        # Still allows manual trigger
 
 jobs:
   run-tests:
