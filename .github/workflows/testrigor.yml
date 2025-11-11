@@ -14,6 +14,6 @@ jobs:
           RESPONSE=$(curl -s -X POST \
             -H "Content-Type: application/json" \
             -H "auth-token: ${{ secrets.TESTRIGOR_AUTH_TOKEN }}" \
-            https://api.testrigor.com/api/v1/apps/ytd8wTv9LncfCit95/retest)
+            https://api.testrigor.com/api/v1/apps/yxmxSaxAbo4fe6d5C/retest)
 
           echo "Response: $RESPONSE"
