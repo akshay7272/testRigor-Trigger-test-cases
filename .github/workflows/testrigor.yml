@@ -1,24 +1,69 @@
 name: Run testRigor Tests
 
 on:
-  push:                     # Trigger on any push
+  push:
     branches:
-      - main                # Or your default branch
+      - main
     paths:
-      - '**'                # Trigger on any file change
-  workflow_dispatch:        # Still allows manual trigger
+      - '**'
+  workflow_dispatch:
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger testRigor Test Suite
+      - name: Trigger testRigor Test Suite with stored values
         run: |
-          echo "Triggering testRigor test suite..."
-          RESPONSE=$(curl -s -X POST \
+          echo "Triggering testRigor test suite with stored values..."
+          curl -X POST \
             -H "Content-Type: application/json" \
             -H "auth-token: ${{ secrets.TESTRIGOR_AUTH_TOKEN }}" \
-            https://api.testrigor.com/api/v1/apps/yxmxSaxAbo4fe6d5C/retest)
+            --data '{"forceCancelPreviousTesting":true,"storedValues":{"storedValueName1":"Value"}}' \
+            https://api.testrigor.com/api/v1/apps/yxmxSaxAbo4fe6d5C/retest
 
-          echo "Response: $RESPONSE"
+          echo "Waiting for test completion..."
+
+          sleep 10
+
+          while true
+          do
+            echo " "
+            echo "==================================="
+            echo " Checking run status"
+            echo "==================================="
+            response=$(curl -i -o - -s -X GET 'https://api.testrigor.com/api/v1/apps/yxmxSaxAbo4fe6d5C/status' \
+              -H "auth-token: ${{ secrets.TESTRIGOR_AUTH_TOKEN }}" \
+              -H "Accept: application/json")
+            code=$(echo "$response" | grep HTTP | awk '{print $2}')
+            body=$(echo "$response" | sed -n '/{/,/}/p')
+            echo "Status code: $code"
+            echo "Response: $body"
+
+            case $code in
+              4*|5*)
+                echo "Error calling API"
+                exit 1
+                ;;
+              200)
+                echo "Test finished successfully"
+                exit 0
+                ;;
+              227|228)
+                echo "Test is not finished yet"
+                ;;
+              229)
+                echo "Test canceled"
+                exit 1
+                ;;
+              230)
+                echo "Test finished but failed"
+                exit 1
+                ;;
+              *)
+                echo "Unknown status"
+                exit 1
+            esac
+
+            sleep 10
+          done
