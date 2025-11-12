@@ -18,7 +18,7 @@ jobs:
           echo "Triggering testRigor test suite with stored values..."
           curl -X POST \
             -H "Content-Type: application/json" \
-            -H "auth-token: ${{ secrets.TESTRIGOR_AUTH_TOKEN }}" \
+            -H 'auth-token: 75bb27ae-79a0-4cce-96bf-7bb027f6767b' \
             --data '{"forceCancelPreviousTesting":true,"storedValues":{"storedValueName1":"Value"}}' \
             https://api.testrigor.com/api/v1/apps/yxmxSaxAbo4fe6d5C/retest
 
